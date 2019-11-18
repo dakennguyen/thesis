@@ -36,7 +36,7 @@ contract Idp {
     }
 
     function sendData(address service) public hasRegistered() returns(bool, bytes memory) {
-        string memory tmp = '';
+        string memory tmp = 'Data:';
         string memory allowedClaims = getAllowedClaims(service);
         for (uint i = 0; i < clients[msg.sender].dataCount; i++) {
             if (contains(clients[msg.sender].data[i].claimType, allowedClaims)) {
@@ -45,6 +45,14 @@ contract Idp {
         }
         (bool success, bytes memory result) = service.call(abi.encodeWithSignature("setData(address,string)", msg.sender, tmp));
         return (success, result);
+    }
+
+    function getAllClaims() public hasRegistered() returns(string memory) {
+        string memory tmp = '';
+        for (uint i = 0; i < clients[msg.sender].dataCount; i++) {
+            tmp = string(abi.encodePacked(tmp, ' ', clients[msg.sender].data[i].claimType, ':', clients[msg.sender].data[i].claimValue));
+        }
+        return tmp;
     }
 
     modifier hasRegistered() {
@@ -75,8 +83,7 @@ contract Idp {
 
     function getAllowedClaims(address addr) private returns(string memory) {
         (bool success, bytes memory result) = dnsServices.call(abi.encodeWithSignature("serviceProviders(address)", addr));
-        string memory tmp = abi.decode(result, (string));
-        return tmp;
+        return abi.decode(result, (string));
     }
 
     //function test2(uint i) public returns(string memory, string memory) {
