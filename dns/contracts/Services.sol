@@ -9,7 +9,9 @@ contract Services {
     }
 
     constructor() public {
+        // Address of Beer Club
         serviceProviders[0xdbD8635f1b03e084F7b1A9E1a967E8b87605c96B] = Value('age', 1);
+        // Address of Library
         serviceProviders[0x79D602F576243c04A2378b01B0C0C7d3e95A7827] = Value('university name', 2);
     }
 
