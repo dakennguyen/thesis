@@ -61,12 +61,13 @@ contract Idp {
     }
 
     function contains(string memory what, string memory where) private returns(bool) {
-        where = string(abi.encodePacked(where, ' '));
         bytes memory whatBytes = bytes (what);
         bytes memory whereBytes = bytes (where);
+        
+        if (whereBytes.length < whatBytes.length) return false;
 
         bool found = false;
-        for (uint i = 0; i < whereBytes.length - whatBytes.length; i++) {
+        for (uint i = 0; i <= whereBytes.length - whatBytes.length; i++) {
             bool flag = true;
             for (uint j = 0; j < whatBytes.length; j++)
             if (whereBytes [i + j] != whatBytes [j]) {
