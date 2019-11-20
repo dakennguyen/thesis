@@ -3,6 +3,7 @@ import './App.css';
 import Web3 from 'web3';
 import Idp from './abis/Idp.json';
 import AddClaim from './components/AddClaim.js';
+import Authentication from './components/Authentication.js';
 
 //const ipfsClient = require('ipfs-http-client');
 //const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
@@ -121,6 +122,7 @@ class App extends Component {
                                 </form>
                                 */}
                                 <AddClaim contract={this.state.contract} account={this.state.account} />
+                                <Authentication contract={this.state.contract} account={this.state.account} />
                             </div>
                         </main>
                     </div>

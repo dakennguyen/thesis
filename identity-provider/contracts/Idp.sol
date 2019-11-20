@@ -86,7 +86,7 @@ contract Idp {
         return found;
     }
 
-    function getAllowedClaims(address addr) private returns(string memory) {
+    function getAllowedClaims(address addr) public returns(string memory) {
         (bool success, bytes memory result) = dnsServices.call(abi.encodeWithSignature("serviceProviders(address)", addr));
         return abi.decode(result, (string));
     }

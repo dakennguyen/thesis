@@ -21,7 +21,6 @@ class AddClaim extends Component {
 
     onSubmit = (event) => {
         event.preventDefault();
-        console.log("Submitting...");
         this.props.contract.methods.addClaim(this.state.claimType, this.state.claimValue).send({ from: this.props.account }).then((r) => {
             console.log("submitted");
         });
@@ -48,13 +47,11 @@ class AddClaim extends Component {
                 <div className="form-group">
                     <label>Add a new claim:</label>
                     <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Type" onChange={this.captureClaimType} />
-                </div>
-                <div className="form-group">
                     <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Value" onChange={this.captureClaimValue} />
+                    <button type="submit" className="btn btn-primary">Submit</button>
+                    <button type="button" className="btn btn-primary" onClick={this.getAllClaims}>Get all Claims</button>
+                    <button type="button" className="btn btn-primary" onClick={this.register}>Register</button>
                 </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
-                <button type="button" className="btn btn-primary" onClick={this.getAllClaims}>Get all Claims</button>
-                <button type="button" className="btn btn-primary" onClick={this.register}>Register</button>
             </form>
         );
     }
