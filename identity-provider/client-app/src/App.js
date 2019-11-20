@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import './App.css';
 import Web3 from 'web3';
 import Idp from './abis/Idp.json';
+import AddClaim from './components/AddClaim.js';
 
-const ipfsClient = require('ipfs-http-client');
-const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
-const domain = 'ipfs.infura.io';
+//const ipfsClient = require('ipfs-http-client');
+//const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+//const domain = 'ipfs.infura.io';
 
 class App extends Component {
-    async componentWillMount() {
+    async UNSAFE_componentWillMount() {
         await this.loadWeb3();
         await this.loadBlockchainData();
     }
@@ -25,7 +26,7 @@ class App extends Component {
             const contract = new web3.eth.Contract(abi, address);
             this.setState({ contract });
             contract.methods.getRegistered(this.state.account).call().then((r) => {
-                this.setState({ test: r.toString() })
+                this.setState({ registered: r.toString() })
             });
         } else {
             window.alert('Smart contract not deployed to detected network');
@@ -52,36 +53,36 @@ class App extends Component {
             account: '',
             buffer: null,
             contract: null,
-            test: ''
+            registered: '',
         };
     }
 
-    captureText = (event) => {
-        event.preventDefault();
-        const test = event.target.value;
-        this.setState({ test });
-    }
 
-    onSubmit = (event) => {
-        event.preventDefault();
-        console.log("Submitting...");
-        var buf = Buffer.from(this.state.test, 'utf8');
-        ipfs.add(buf, (error, result) => {
-            console.log('ipfs result', result);
-            const test = result[0].hash;
-            this.setState({ test });
-            if (error) {
-                console.error(error);
-                return;
-            }
+    //captureText = (event) => {
+    //event.preventDefault();
+    //const test = event.target.value;
+    //this.setState({ test });
+    //}
 
-            // Step 2: store file on blockchain...
-            this.state.contract.methods.set(test).send({ from: this.state.account }).then((r) => {
-                this.setState({ test });
-            });
-        });
+    //onSubmit = (event) => {
+    //event.preventDefault();
+    //console.log("Submitting...");
+    //var buf = Buffer.from(this.state.test, 'utf8');
+    //ipfs.add(buf, (error, result) => {
+    //console.log('ipfs result', result);
+    //const test = result[0].hash;
+    //this.setState({ test });
+    //if (error) {
+    //console.error(error);
+    //return;
+    //}
 
-    }
+    //// Step 2: store file on blockchain...
+    //this.state.contract.methods.set(test).send({ from: this.state.account }).then((r) => {
+    //this.setState({ test });
+    //});
+    //});
+    //}
 
     render() {
         return (
@@ -100,7 +101,7 @@ class App extends Component {
                             <small className="text-white">{this.state.account}</small>
                         </li>
                         <li className="nav-item text-nowrap d-none d-sm-none d-sm-block">
-                            <small className="text-white">Registered = {this.state.test}</small>
+                            <small className="text-white">Registered = {this.state.registered}</small>
                         </li>
                     </ul>
                 </nav>
@@ -109,6 +110,7 @@ class App extends Component {
                         <main role="main" className="col-lg-12 d-flex text-center">
                             <div className="content mr-auto ml-auto">
                                 <h2>Change meme</h2>
+                                {/*
                                 <p>{`https://${domain}/ipfs/${this.state.test}`}</p>
                                 <form onSubmit={this.onSubmit}>
                                     <div className="form-group">
@@ -117,6 +119,8 @@ class App extends Component {
                                         <input type='submit' />
                                     </div>
                                 </form>
+                                */}
+                                <AddClaim contract={this.state.contract} account={this.state.account} />
                             </div>
                         </main>
                     </div>

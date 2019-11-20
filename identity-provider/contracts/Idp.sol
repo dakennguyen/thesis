@@ -3,7 +3,7 @@ pragma solidity ^0.5.0;
 contract Idp {
     mapping(address => Data) private clients;
     uint private clientsCount;
-    address dnsServices = 0x132BA6EB88c34f7eb6262758e54cebeC0e18a64C;
+    address dnsServices = 0x86629d9B3f37786438206E3D0400f466901bd229;
 
     struct Data {
         Claim[] data;
