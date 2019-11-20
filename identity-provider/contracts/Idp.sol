@@ -24,6 +24,10 @@ contract Idp {
         clients[0x5963D7FA276fA797f174752A852AbfE32Db791D6].dataCount = 2;
     }
 
+    function getRegistered(address addr) public returns(bool) {
+        return clients[addr].registered;
+    }
+
     function register() public {
         require(!clients[msg.sender].registered, "Already registered");
         clients[msg.sender].registered = true;

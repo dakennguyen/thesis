@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Web3 from 'web3';
-import Test from './abis/Test.json';
+import Idp from './abis/Idp.json';
 
 const ipfsClient = require('ipfs-http-client');
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
@@ -18,19 +17,22 @@ class App extends Component {
         const web3 = window.web3;
         const accounts = await web3.eth.getAccounts();
         this.setState({ account: accounts[0] });
-        console.log(accounts[0]);
         const networkId = await web3.eth.net.getId();
-        const networkData = Test.networks[networkId];
+        const networkData = Idp.networks[networkId];
         if (networkData) {
-            const abi = Test.abi;
+            const abi = Idp.abi;
             const address = networkData.address;
             const contract = new web3.eth.Contract(abi, address);
             this.setState({ contract });
-            const test = await contract.methods.get().call();
-            this.setState({ test })
+            contract.methods.getRegistered(this.state.account).call().then((r) => {
+                this.setState({ test: r.toString() })
+            });
         } else {
             window.alert('Smart contract not deployed to detected network');
         }
+        window.ethereum.on('accountsChanged', function (accounts) {
+            window.location.reload();
+        })
     }
 
     async loadWeb3() {
@@ -96,6 +98,9 @@ class App extends Component {
                     <ul className="navbar-nav px-3">
                         <li className="nav-item text-nowrap d-none d-sm-none d-sm-block">
                             <small className="text-white">{this.state.account}</small>
+                        </li>
+                        <li className="nav-item text-nowrap d-none d-sm-none d-sm-block">
+                            <small className="text-white">Registered = {this.state.test}</small>
                         </li>
                     </ul>
                 </nav>
