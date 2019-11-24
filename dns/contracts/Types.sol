@@ -1,7 +1,8 @@
 pragma solidity ^0.5.0;
 
 contract Types {
-    mapping (string => string) public types;
+    mapping(string => string) public types;
+    mapping(string => string) public publicKeys;
     address private owner;
 
     constructor() public {
@@ -13,6 +14,10 @@ contract Types {
 
     function setValidator(string memory claimType, string memory link) public onlyOwner {
         types[claimType] = link;
+    }
+
+    function setPublicKeys(string memory claimType, string memory publicKey) public onlyOwner {
+        types[claimType] = publicKey;
     }
 
     modifier onlyOwner {
