@@ -6,6 +6,7 @@ class AddClaim extends Component {
         this.state = {
             claimType: '',
             claimValue: '',
+            signature: ''
         };
     }
 
@@ -19,9 +20,14 @@ class AddClaim extends Component {
         this.setState({ claimValue: event.target.value });
     }
 
+    captureSignature = (event) => {
+        event.preventDefault();
+        this.setState({ signature: event.target.value });
+    }
+
     onSubmit = (event) => {
         event.preventDefault();
-        this.props.contract.methods.addClaim(this.state.claimType, this.state.claimValue).send({ from: this.props.account }).then((r) => {
+        this.props.contract.methods.addAttribute(this.state.claimType, this.state.claimValue, this.state.signature).send({ from: this.props.account }).then((r) => {
             console.log("submitted");
         });
     }
@@ -33,7 +39,7 @@ class AddClaim extends Component {
 
     getAllClaims = (event) => {
         event.preventDefault();
-        this.props.contract.methods.getAllClaims.call({ from: this.props.account }).then((r) => {
+        this.props.contract.methods.getAllAttributes.call({ from: this.props.account }).then((r) => {
             console.log(r);
         })
         //this.props.contract.methods.getAllClaims(this.props.account).call({ from: this.props.account }).then((r) => {
@@ -48,6 +54,7 @@ class AddClaim extends Component {
                     <label>Add a new claim:</label>
                     <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Type" onChange={this.captureClaimType} />
                     <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Value" onChange={this.captureClaimValue} />
+                    <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Signature" onChange={this.captureSignature} />
                     <button type="submit" className="btn btn-primary">Submit</button>
                     <button type="button" className="btn btn-primary" onClick={this.getAllClaims}>Get all Claims</button>
                     <button type="button" className="btn btn-primary" onClick={this.register}>Register</button>

@@ -26,7 +26,7 @@ class App extends Component {
             const address = networkData.address;
             const contract = new web3.eth.Contract(abi, address);
             this.setState({ contract });
-            contract.methods.getRegistered(this.state.account).call().then((r) => {
+            contract.methods.getRegistered().call({ from: this.state.account }).then((r) => {
                 this.setState({ registered: r.toString() })
             });
         } else {
