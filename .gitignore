@@ -3,3 +3,7 @@ services/beer-club/build
 services/library/build
 identity-provider/client-app/node_modules
 identity-provider/client-app/src/abis
+validators/.vs
+validators/.vscode
+validators/bin
+validators/obj
