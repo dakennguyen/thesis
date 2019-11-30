@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Web3 from 'web3';
 import Idp from './abis/Idp.json';
+import Types from './abis/Types.json';
 import AddClaim from './components/AddClaim.js';
 import Authentication from './components/Authentication.js';
 
@@ -25,7 +26,8 @@ class App extends Component {
             const abi = Idp.abi;
             const address = networkData.address;
             const contract = new web3.eth.Contract(abi, address);
-            this.setState({ contract });
+            const typesContract = new web3.eth.Contract(Types.abi, Types.networks[networkId].address);
+            this.setState({ contract, typesContract });
             contract.methods.getRegistered().call({ from: this.state.account }).then((r) => {
                 this.setState({ registered: r.toString() })
             });
@@ -34,7 +36,7 @@ class App extends Component {
         }
         window.ethereum.on('accountsChanged', function (accounts) {
             window.location.reload();
-        })
+        });
     }
 
     async loadWeb3() {
@@ -54,6 +56,7 @@ class App extends Component {
             account: '',
             buffer: null,
             contract: null,
+            typesContract: null,
             registered: '',
         };
     }
@@ -121,7 +124,7 @@ class App extends Component {
                                     </div>
                                 </form>
                                 */}
-                                <AddClaim contract={this.state.contract} account={this.state.account} />
+                                <AddClaim contract={this.state.contract} typesContract={this.state.typesContract} account={this.state.account} />
                                 <Authentication contract={this.state.contract} account={this.state.account} />
                             </div>
                         </main>

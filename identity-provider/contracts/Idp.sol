@@ -18,16 +18,12 @@ contract Idp {
     }
 
     constructor() public {
-        // Geth: Address of Account 0
-        clients[0x8C02816311bCfeEe76fB6b9C20AF38BC477f3D9d].data.push(Attribute('age', '22', 'JHxzfiH+SgM230bKbDmB4uysBHutl9jgZq4bCwpka+4+fUd6bvKxFTV942ar7Dec3dwWf1tod3XOi7ZNugS5jR7mE48nUc1FxEyYNS7MmoDFXd+bv3cJfa3aJWHRX6aQZO4DihsrZ2O0tL6FQ8TbROyDUGGKsVdoZAEUoRdJdf0KD11tQinybrL5jk00TZCubytDBmSwrOcCq7rohHqA+dZ0+p5XZgsqpTWgs84JwBDBjGjjiDOhClRK/O4n9cP8pE2Bjizx8lCb2OKlKQR/QLk23Ajyb+/m3MWzBkCkmu6ZezTUWgEKpKMhXIOKnsxd2D451LTUKSAUUlpUqEfLow=='));
-        clients[0x8C02816311bCfeEe76fB6b9C20AF38BC477f3D9d].data.push(Attribute('name', 'khoa', 'jFlUbuhkLRgERZ8abL0uPFmssNoc5x77lmq3AaF+zJcFgK2eSkoValRuKguj8ksVktAn2Q6xpihlZX4CJoj06ZSfV7ggLwGjVYBwNehm+KT2EI2Rf5mXcIHRSjoUHy88187PrTQHz5Refq8hcIXL5U9dzvqturL4zBvrH2DH2tmM21N4ApJRLLSzZFFp7fmWZtJgwCZQjJMd6OTFLWjR2P9LztAfxkJ1G3RryqObsijHK1t5uvR1UJFssDcA9ZJbbFpIzjaE8bYdcSkDRwvbh3o8p/MTtOMe2Ef9vcVAdLSIj+AhwLaxUr0zWWrNMt/NsB+RcJjm3fC5asZRVqffWQ=='));
-        clients[0x8C02816311bCfeEe76fB6b9C20AF38BC477f3D9d].registered = true;
-        clients[0x8C02816311bCfeEe76fB6b9C20AF38BC477f3D9d].dataCount = 2;
-        // Truffle: Address of Account 0
-        //clients[0x5963D7FA276fA797f174752A852AbfE32Db791D6].data.push(Attribute('age', '22', 'JHxzfiH+SgM230bKbDmB4uysBHutl9jgZq4bCwpka+4+fUd6bvKxFTV942ar7Dec3dwWf1tod3XOi7ZNugS5jR7mE48nUc1FxEyYNS7MmoDFXd+bv3cJfa3aJWHRX6aQZO4DihsrZ2O0tL6FQ8TbROyDUGGKsVdoZAEUoRdJdf0KD11tQinybrL5jk00TZCubytDBmSwrOcCq7rohHqA+dZ0+p5XZgsqpTWgs84JwBDBjGjjiDOhClRK/O4n9cP8pE2Bjizx8lCb2OKlKQR/QLk23Ajyb+/m3MWzBkCkmu6ZezTUWgEKpKMhXIOKnsxd2D451LTUKSAUUlpUqEfLow=='));
-        //clients[0x5963D7FA276fA797f174752A852AbfE32Db791D6].data.push(Attribute('name', 'khoa', 'jFlUbuhkLRgERZ8abL0uPFmssNoc5x77lmq3AaF+zJcFgK2eSkoValRuKguj8ksVktAn2Q6xpihlZX4CJoj06ZSfV7ggLwGjVYBwNehm+KT2EI2Rf5mXcIHRSjoUHy88187PrTQHz5Refq8hcIXL5U9dzvqturL4zBvrH2DH2tmM21N4ApJRLLSzZFFp7fmWZtJgwCZQjJMd6OTFLWjR2P9LztAfxkJ1G3RryqObsijHK1t5uvR1UJFssDcA9ZJbbFpIzjaE8bYdcSkDRwvbh3o8p/MTtOMe2Ef9vcVAdLSIj+AhwLaxUr0zWWrNMt/NsB+RcJjm3fC5asZRVqffWQ=='));
-        //clients[0x5963D7FA276fA797f174752A852AbfE32Db791D6].registered = true;
-        //clients[0x5963D7FA276fA797f174752A852AbfE32Db791D6].dataCount = 2;
+        address a0 = 0x8C02816311bCfeEe76fB6b9C20AF38BC477f3D9d;
+        // address a0 = 0x5963D7FA276fA797f174752A852AbfE32Db791D6;
+        clients[a0].data.push(Attribute('age', '22', '99699b7dada4c013faccd4eb708c7b444cbcbfb5107032916b2a55307042ecf6699522cec6b893c30aa694d40084431984b8e04a63625883226d24dfba89c041e3031fc9ad96a76e6789127fb37f9dc6e9671505f41face504322dd57fe3916c7b71c83f23aae9cdadbab1dfa0074ea557ca6f212daadc276bcc868cba794a31'));
+        clients[a0].data.push(Attribute('name', 'khoa', 'cd81eea6c1f88997bbdb04b9647fba1891874aea0cf66d435fa915c9876bdd7b577edb2fe976d1825e2cdcc23a2fa826fed10840ed0e79a90b277489dc413a774a27e1f4751145d4e4df13fa081ec2dee0ab1cf23e7ac39a87f9edf9ab88040a906cec1a75870a6857b94f2ec139bdd20e9e1691539266f31ac98daea31d9b6e'));
+        clients[a0].registered = true;
+        clients[a0].dataCount = 2;
     }
 
     function getRegistered() public view returns(bool) {
@@ -105,6 +101,6 @@ contract Idp {
     //}
 
     //function test2(uint i) public returns(string memory, string memory) {
-        //return (clients[0x8C02816311bCfeEe76fB6b9C20AF38BC477f3D9d].data[i].attributeType, clients[0x8C02816311bCfeEe76fB6b9C20AF38BC477f3D9d].data[i].attributeValue);
+        //return (clients[a0].data[i].attributeType, clients[a0].data[i].attributeValue);
     //}
 }

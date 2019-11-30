@@ -4,59 +4,75 @@ class AddClaim extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            claimType: '',
-            claimValue: '',
-            signature: ''
+            attributeType: '',
+            attributeValue: '',
+            signature: 'Signature...',
+            signedBy: 'Signed by...'
         };
     }
 
-    captureClaimType = (event) => {
+    captureAttributeType = (event) => {
         event.preventDefault();
-        this.setState({ claimType: event.target.value });
+        this.setState({
+            attributeType: event.target.value,
+            signature: 'Please fetch signature!',
+            signedBy: 'Please fetch signature!'
+        });
     }
 
-    captureClaimValue = (event) => {
+    captureAttributeValue = (event) => {
         event.preventDefault();
-        this.setState({ claimValue: event.target.value });
+        this.setState({
+            attributeValue: event.target.value,
+            signature: 'Please fetch signature!',
+            signedBy: 'Please fetch signature!'
+        });
     }
 
-    captureSignature = (event) => {
+    onConfirm = (event) => {
         event.preventDefault();
-        this.setState({ signature: event.target.value });
+        this.props.typesContract.methods.getValidator(this.state.attributeType).call().then((r) => {
+            fetch(r + '?data=' + this.state.attributeValue).then((result) => {
+                result.json().then(data => {
+                    this.setState({ signature: '0x' + data.signature })
+                    this.setState({ signedBy: r });
+                });
+            });
+        });
     }
 
     onSubmit = (event) => {
         event.preventDefault();
-        this.props.contract.methods.addAttribute(this.state.claimType, this.state.claimValue, this.state.signature).send({ from: this.props.account }).then((r) => {
+        this.props.contract.methods.addAttribute(this.state.attributeType, this.state.attributeValue, this.state.signature).send({ from: this.props.account }).then((r) => {
             console.log("submitted");
         });
     }
+
 
     register = (event) => {
         event.preventDefault();
         this.props.contract.methods.register.send({ from: this.props.account });
     }
 
-    getAllClaims = (event) => {
+    getAllAttributes = (event) => {
         event.preventDefault();
         this.props.contract.methods.getAllAttributes.call({ from: this.props.account }).then((r) => {
             console.log(r);
         })
-        //this.props.contract.methods.getAllClaims(this.props.account).call({ from: this.props.account }).then((r) => {
-        //console.log(r);
-        //})
     }
 
     render() {
         return (
             <form onSubmit={this.onSubmit}>
                 <div className="form-group">
-                    <label>Add a new claim:</label>
-                    <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Type" onChange={this.captureClaimType} />
-                    <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Value" onChange={this.captureClaimValue} />
-                    <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Signature" onChange={this.captureSignature} />
+                    <label>Add a new attribute:</label>
+                    <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Type" onChange={this.captureAttributeType} />
+                    <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Value" onChange={this.captureAttributeValue} />
+                    <input className="form-control" type="text" placeholder={this.state.signature} readOnly />
+                    <input className="form-control" type="text" placeholder={this.state.signedBy} readOnly />
+                    <button type="button" className="btn btn-secondary" onClick={this.onConfirm}>Confirm</button>
                     <button type="submit" className="btn btn-primary">Submit</button>
-                    <button type="button" className="btn btn-primary" onClick={this.getAllClaims}>Get all Claims</button>
+                    <button type="button" className="btn btn-primary" onClick={this.getAllAttributes}>Get all Attributes</button>
                     <button type="button" className="btn btn-primary" onClick={this.register}>Register</button>
                 </div>
             </form>
