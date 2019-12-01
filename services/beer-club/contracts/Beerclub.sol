@@ -8,6 +8,8 @@ contract Beerclub {
     using strings for *;
     using rsaverify for *;
 
+    address constant dnsTypes = 0xAAEf6427308fA1514173b5a5A181F281D1111fe0;
+
     mapping(address => RawData) private clients;
 
     struct RawData {
@@ -32,7 +34,7 @@ contract Beerclub {
         for(uint i = 0; i < parts.length; i++) {
             parts[i] = s.split(space);
             Data memory tmp = Data(parts[i].split(colon).toString(), parts[i].split(colon).toString(), parts[i].split(colon).toString());
-            result[i] = verify(tmp.attributeValue, fromHex(tmp.signature), fromHex('D1FD9EFDFAF631C2BDB87ECF9989F5BB98D15FE4FE4BC6E64E77DD84AA5CFF6CD00A73720C9690D030AA7C704959CE4B252772BAC8719C72BB56E8D96F212904AF9C78C6DFB4D3A9FE4A8F6E555E7E07D24D348EEAF0BB47FE176CBE070380EF694153F809CD7032984074F5BCB6EAF618EC357B0CED608D1D1EAE3214F790FF'));
+            result[i] = verify(tmp.attributeValue, fromHex(tmp.signature), fromHex(getPublicKey(tmp.attributeType)));
         }
         return result;
     }
@@ -48,6 +50,11 @@ contract Beerclub {
 
         uint result = hash.pkcs1Sha256Verify(signature, exponent, modulus);
         return result == 0;
+    }
+
+    function getPublicKey(string memory attributeType) private returns(string memory) {
+        (bool success, bytes memory result) = dnsTypes.call(abi.encodeWithSignature("getPublicKey(string)", attributeType));
+        return abi.decode(result, (string));
     }
 
     // Convert an hexadecimal character to their value
