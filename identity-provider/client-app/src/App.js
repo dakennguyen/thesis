@@ -3,8 +3,8 @@ import './App.css';
 import Web3 from 'web3';
 import Idp from './abis/Idp.json';
 import Types from './abis/Types.json';
+import Services from './abis/Services.json';
 import AddClaim from './components/AddClaim.js';
-import Authentication from './components/Authentication.js';
 
 //const ipfsClient = require('ipfs-http-client');
 //const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
@@ -25,8 +25,11 @@ class App extends Component {
         if (networkData) {
             const abi = Idp.abi;
             const address = networkData.address;
+            console.log('IDP: ' + address);
             const contract = new web3.eth.Contract(abi, address);
             const typesContract = new web3.eth.Contract(Types.abi, Types.networks[networkId].address);
+            console.log('DNS Types: ' + Types.networks[networkId].address);
+            console.log('DNS Services: ' + Services.networks[networkId].address);
             this.setState({ contract, typesContract });
             contract.methods.getRegistered().call({ from: this.state.account }).then((r) => {
                 this.setState({ registered: r.toString() })
@@ -98,7 +101,7 @@ class App extends Component {
                         target="_blank"
                         rel="noopener noreferrer"
                     >
-                        Meme of the Day
+                        Identity Provider
                     </a>
                     <ul className="navbar-nav px-3">
                         <li className="nav-item text-nowrap d-none d-sm-none d-sm-block">
@@ -113,7 +116,6 @@ class App extends Component {
                     <div className="row">
                         <main role="main" className="col-lg-12 d-flex text-center">
                             <div className="content mr-auto ml-auto">
-                                <h2>Change meme</h2>
                                 {/*
                                 <p>{`https://${domain}/ipfs/${this.state.test}`}</p>
                                 <form onSubmit={this.onSubmit}>
@@ -125,7 +127,6 @@ class App extends Component {
                                 </form>
                                 */}
                                 <AddClaim contract={this.state.contract} typesContract={this.state.typesContract} account={this.state.account} />
-                                <Authentication contract={this.state.contract} account={this.state.account} />
                             </div>
                         </main>
                     </div>

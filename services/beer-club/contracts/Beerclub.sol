@@ -8,7 +8,7 @@ contract Beerclub {
     using strings for *;
     using rsaverify for *;
 
-    address constant dnsTypes = 0xAAEf6427308fA1514173b5a5A181F281D1111fe0;
+    address constant dnsTypes = 0xC29D7c37a4482e621B4146b63373197a386Ee52A;
 
     mapping(address => RawData) private clients;
 

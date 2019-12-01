@@ -1,9 +1,15 @@
 Session.vim
+
 dns/build
+
 services/beer-club/build
+services/beer-club/client-app/src/abis
+
 services/library/build
+
 identity-provider/client-app/node_modules
 identity-provider/client-app/src/abis
+
 validators/.vs
 validators/.vscode
 validators/bin

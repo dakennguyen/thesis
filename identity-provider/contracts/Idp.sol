@@ -3,7 +3,7 @@ pragma solidity ^0.5.0;
 contract Idp {
     mapping(address => Data) private clients;
     uint private clientsCount;
-    //address dnsServices = 0x86629d9B3f37786438206E3D0400f466901bd229;
+    //address dnsServices = 0x4eb1D313b64cAbD617E293d76278e0cDD294C6fe;
 
     struct Data {
         Attribute[] data;
@@ -18,8 +18,8 @@ contract Idp {
     }
 
     constructor() public {
-        address a0 = 0x8C02816311bCfeEe76fB6b9C20AF38BC477f3D9d;
-        // address a0 = 0x5963D7FA276fA797f174752A852AbfE32Db791D6;
+        //address a0 = 0x8C02816311bCfeEe76fB6b9C20AF38BC477f3D9d;
+         address a0 = 0x5963D7FA276fA797f174752A852AbfE32Db791D6;
         clients[a0].data.push(Attribute('age', '22', '99699b7dada4c013faccd4eb708c7b444cbcbfb5107032916b2a55307042ecf6699522cec6b893c30aa694d40084431984b8e04a63625883226d24dfba89c041e3031fc9ad96a76e6789127fb37f9dc6e9671505f41face504322dd57fe3916c7b71c83f23aae9cdadbab1dfa0074ea557ca6f212daadc276bcc868cba794a31'));
         clients[a0].data.push(Attribute('name', 'khoa', 'cd81eea6c1f88997bbdb04b9647fba1891874aea0cf66d435fa915c9876bdd7b577edb2fe976d1825e2cdcc23a2fa826fed10840ed0e79a90b277489dc413a774a27e1f4751145d4e4df13fa081ec2dee0ab1cf23e7ac39a87f9edf9ab88040a906cec1a75870a6857b94f2ec139bdd20e9e1691539266f31ac98daea31d9b6e'));
         clients[a0].registered = true;
@@ -98,9 +98,5 @@ contract Idp {
     //function getAllowedAttributes(address addr) public returns(string memory) {
         //(bool success, bytes memory result) = dnsServices.call(abi.encodeWithSignature("serviceProviders(address)", addr));
         //return abi.decode(result, (string));
-    //}
-
-    //function test2(uint i) public returns(string memory, string memory) {
-        //return (clients[a0].data[i].attributeType, clients[a0].data[i].attributeValue);
     //}
 }

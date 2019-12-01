@@ -65,7 +65,7 @@ class AddClaim extends Component {
         return (
             <form onSubmit={this.onSubmit}>
                 <div className="form-group">
-                    <label>Add a new attribute:</label>
+                    <h2>Add a new attribute:</h2>
                     <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Type" onChange={this.captureAttributeType} />
                     <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Value" onChange={this.captureAttributeValue} />
                     <input className="form-control" type="text" placeholder={this.state.signature} readOnly />
