@@ -34,7 +34,7 @@ class AddClaim extends Component {
         this.props.typesContract.methods.getValidator(this.state.attributeType).call().then((r) => {
             fetch(r + '?data=' + this.state.attributeValue).then((result) => {
                 result.json().then(data => {
-                    this.setState({ signature: '0x' + data.signature })
+                    this.setState({ signature: data.signature })
                     this.setState({ signedBy: r });
                 });
             });
