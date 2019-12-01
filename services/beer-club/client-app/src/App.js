@@ -3,7 +3,6 @@ import Web3 from 'web3';
 import Idp from './abis/Idp.json';
 import Beerclub from './abis/Beerclub.json';
 import Authentication from './components/Authentication.js';
-import Data from './components/Data.js';
 
 class App extends Component {
     async UNSAFE_componentWillMount() {
@@ -20,7 +19,7 @@ class App extends Component {
         if (networkData) {
             const abi = Idp.abi;
             const address = networkData.address;
-            console.log(address);
+            console.log('IDP: ' + address);
             const contract = new web3.eth.Contract(abi, address);
             const beerclubContract = new web3.eth.Contract(Beerclub.abi, Beerclub.networks[networkId].address)
             this.setState({
@@ -29,7 +28,7 @@ class App extends Component {
                 address: Beerclub.networks[networkId].address
             });
             contract.methods.getRegistered().call({ from: this.state.account }).then((r) => {
-                this.setState({ registered: r.toString() })
+                this.setState({ registered: ((r == null) ? 'false' : r.toString()) })
             });
         } else {
             window.alert('Smart contract not deployed to detected network');
@@ -87,8 +86,7 @@ class App extends Component {
                     <div className="row">
                         <main role="main" className="col-lg-12 d-flex text-center">
                             <div className="content mr-auto ml-auto">
-                                <Authentication contract={this.state.contract} address={this.state.address} account={this.state.account} />
-                                <Data contract={this.state.beerclubContract} account={this.state.account} />
+                                <Authentication contract={this.state.contract} beerclubContract={this.state.beerclubContract} address={this.state.address} account={this.state.account} />
                             </div>
                         </main>
                     </div>

@@ -3,7 +3,7 @@ import './App.css';
 import Web3 from 'web3';
 import Idp from './abis/Idp.json';
 import Types from './abis/Types.json';
-import Services from './abis/Services.json';
+//import Services from './abis/Services.json';
 import AddClaim from './components/AddClaim.js';
 
 //const ipfsClient = require('ipfs-http-client');
@@ -29,10 +29,10 @@ class App extends Component {
             const contract = new web3.eth.Contract(abi, address);
             const typesContract = new web3.eth.Contract(Types.abi, Types.networks[networkId].address);
             console.log('DNS Types: ' + Types.networks[networkId].address);
-            console.log('DNS Services: ' + Services.networks[networkId].address);
+            //console.log('DNS Services: ' + Services.networks[networkId].address);
             this.setState({ contract, typesContract });
             contract.methods.getRegistered().call({ from: this.state.account }).then((r) => {
-                this.setState({ registered: r.toString() })
+                this.setState({ registered: ((r == null) ? 'false' : r.toString()) })
             });
         } else {
             window.alert('Smart contract not deployed to detected network');
