@@ -1,0 +1,8 @@
+import "hashes/sha256/512bitPacked" as sha256packed
+
+def main(private field ageDec, field h1, field h2) -> (bool):
+    h = sha256packed([0, 0, 0, ageDec])
+    h[0] == h1
+    h[1] == h2
+    bool flag = if ageDec >= 12600 then true else false fi // "18" => 0x3138 => 12600 in decimal
+    return flag
