@@ -1,7 +1,5 @@
-const Services = artifacts.require("Services");
-const Types = artifacts.require("Types");
+const Dns = artifacts.require("Dns");
 
 module.exports = function(deployer) {
-    deployer.deploy(Services);
-    deployer.deploy(Types);
+    deployer.deploy(Dns);
 };

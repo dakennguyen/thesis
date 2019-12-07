@@ -1,89 +1,95 @@
 pragma solidity ^0.5.0;
-pragma experimental ABIEncoderV2;
 
-import './lib/strings.sol';
 import './lib/rsaverify.sol';
+import './lib/verifier.sol';
 
 contract Beerclub {
-    using strings for *;
+    using Pairing for *;
     using rsaverify for *;
 
-    address constant dnsTypes = 0xdE23b581B51f4be05C72136F3f9C12D2d4A6325E;
-
-    mapping(address => RawData) private clients;
-
-    struct RawData {
-        string value;
-        uint count;
+    //address constant dnsContract = 0xdE23b581B51f4be05C72136F3f9C12D2d4A6325E;
+    function getHashAndSignature() private pure returns(bytes32 hash, bytes memory) {
+        // age = 22
+        return (hex'd9d550f59b03bec9d4d4b0694ef67144a2841c2e6c41eff95c581244753749d2', hex'2e00152c2eafed70baead8fec522c3fcc3203f40b2b85aa375200b0219607bcd59798cce6124dca6ee928ad5109993afa5aa07fbf7dc79ab66ed7c79f6f9a020e75634b6e522fe86d36789c8d3599e487b6ebed6225014c21fb155c891d0ee4a3c8373f47e1d9fed6245ba32b2fb9971fd72f97cb78e9fa0f57bb5c035ce3f53');
     }
 
-    struct Data {
-        string attributeType;
-        string attributeValue;
-        string signature;
+    function getModulusAndExponent() private pure returns(bytes memory, bytes memory) {
+        // egov
+        return (hex"d1fd9efdfaf631c2bdb87ecf9989f5bb98d15fe4fe4bc6e64e77dd84aa5cff6cd00a73720c9690d030aa7c704959ce4b252772bac8719c72bb56e8d96f212904af9c78c6dfb4d3a9fe4a8f6e555e7e07d24d348eeaf0bb47fe176cbe070380ef694153f809cd7032984074f5bcb6eaf618ec357b0ced608d1d1eae3214f790ff", hex"010001");
     }
 
-    function getData(address client) public returns(bool[] memory) {
-        strings.slice memory s = clients[client].value.toSlice();
-        strings.slice memory space = " ".toSlice();
-        strings.slice memory colon = ":".toSlice();
-        strings.slice[] memory parts = new strings.slice[](s.count(space));
+    function checkSignature() private view returns(bool) {
+        (bytes32 hash, bytes memory signature) = getHashAndSignature();
+        (bytes memory modulus, bytes memory exponent) = getModulusAndExponent();
+        return hash.pkcs1Sha256Verify(signature, exponent, modulus) == 0;
+    }
 
-        bool[] memory result = new bool[](clients[client].count);
+    function authenticate(uint[2] memory a, uint[2][2] memory b, uint[2] memory c, uint[3] memory input) public returns (bool r) {
+        require(checkSignature(), "Signature error");
+        return verifyTx(a, b, c, input);
+    }
 
-        for(uint i = 0; i < parts.length; i++) {
-            parts[i] = s.split(space);
-            Data memory tmp = Data(parts[i].split(colon).toString(), parts[i].split(colon).toString(), parts[i].split(colon).toString());
-            result[i] = verify(tmp.attributeValue, fromHex(tmp.signature), fromHex(getPublicKey(tmp.attributeType)));
+    struct VerifyingKey {
+        Pairing.G1Point a;
+        Pairing.G2Point b;
+        Pairing.G2Point gamma;
+        Pairing.G2Point delta;
+        Pairing.G1Point[] gamma_abc;
+    }
+    struct Proof {
+        Pairing.G1Point a;
+        Pairing.G2Point b;
+        Pairing.G1Point c;
+    }
+    function verifyingKey() pure internal returns (VerifyingKey memory vk) {
+        vk.a = Pairing.G1Point(uint256(0x05d887c8266ae0e0cc29f1f010d8c3b4d58e0d7c1e116edd48e518bfa7b5a4e9), uint256(0x0f83e472862e26dfb603e021f9948f33f847194a9573e521a953d764aeee4628));
+        vk.b = Pairing.G2Point([uint256(0x01b10a8a1de60fc2072ad532f84d8cc0936296aeddd4ac5c0dce587cb8b6defb), uint256(0x0a488da88a52716fdcd14ab999af795ea318c2350442c6ba2048d4decf63959c)], [uint256(0x28d2ac6c8ec3d760673d6820280a28461edcebf06eb81e4f67852a62f99b3182), uint256(0x0925e0ff1a3ec4463e2e52a64326895dfe40a07cb6afa66d2187d789ffc97a73)]);
+        vk.gamma = Pairing.G2Point([uint256(0x0c8df63f8e6321b6fadd355421ccf1e3798c1e21cb830ec40231205673acdf8c), uint256(0x14f50f1d0760f22b671ead74dc171cbda07f57340828f71e30b25397c8ddd809)], [uint256(0x085eb2bbad3f296dd17edf4f2bc6b5983a76ddef25aed6f9313b16e2bbfe9e5f), uint256(0x2047f54e9f5acfbd4c5ce73370b905631654ef27c476285b559b8e0b3bb640c9)]);
+        vk.delta = Pairing.G2Point([uint256(0x23de7c1de870d94b4b6e57a05954fac4f7565c7ab4926af07af27e965783e22a), uint256(0x02921039a2c9cfdd5514745754f5584e4e36c41dcb7ba57406d6a31e0a559fbb)], [uint256(0x15835255b731107af89bc521f2a3f6dc1c244cec87b511a85a56a472adda25f1), uint256(0x0dc6a42c6e9c69a2f7d97ce3dd183b1c489019bb66a6b709fb540de8ece48c24)]);
+        vk.gamma_abc = new Pairing.G1Point[](4);
+        vk.gamma_abc[0] = Pairing.G1Point(uint256(0x276e014efcc5b9e4b8454a0addcd28b1cb9c89f450975f4771e19faa32568b97), uint256(0x0d438c3722e6efa8b46d0ecda04f4e507ae45162f3e60f30ed4a9f3bfa739828));
+        vk.gamma_abc[1] = Pairing.G1Point(uint256(0x19183b214296735761ba95b50e2bbd71494b2793773d16ffed69bae9857d6138), uint256(0x2455697745c6927ab29dbcbb5224c2b8d8944285a5fd322a746ef1240c9261a2));
+        vk.gamma_abc[2] = Pairing.G1Point(uint256(0x1b72de1e189668a92998d78d4f618c7f15ff4c17db0d64c2d9e270dc2237e846), uint256(0x25970dcecf079eca63f293e69e2549dfad6f79b6de35c7fb32b49beeab549440));
+        vk.gamma_abc[3] = Pairing.G1Point(uint256(0x2726c99c753018c3b5293cc037bb62709fd2804bbe7b8f9951d9a4bdcad52375), uint256(0x2b5decdf5dc56a867e88bea3c88e8655c73e9f1fcb9670812672d7204dae8717));
+    }
+    function verify(uint[] memory input, Proof memory proof) internal returns (uint) {
+        uint256 snark_scalar_field = 21888242871839275222246405745257275088548364400416034343698204186575808495617;
+        VerifyingKey memory vk = verifyingKey();
+        require(input.length + 1 == vk.gamma_abc.length);
+        // Compute the linear combination vk_x
+        Pairing.G1Point memory vk_x = Pairing.G1Point(0, 0);
+        for (uint i = 0; i < input.length; i++) {
+            require(input[i] < snark_scalar_field);
+            vk_x = Pairing.addition(vk_x, Pairing.scalar_mul(vk.gamma_abc[i + 1], input[i]));
         }
-        return result;
+        vk_x = Pairing.addition(vk_x, vk.gamma_abc[0]);
+        if(!Pairing.pairingProd4(
+            proof.a, proof.b,
+                Pairing.negate(vk_x), vk.gamma,
+            Pairing.negate(proof.c), vk.delta,
+            Pairing.negate(vk.a), vk.b)) return 1;
+            return 0;
     }
-
-    function setData(address client, string memory value, uint count) public onlyFromIdp() {
-        clients[client].value = value;
-        clients[client].count = count;
-    }
-
-    function verify(string memory inp, bytes memory signature, bytes memory modulus) public view returns(bool) {
-        bytes32 hash = sha256(bytes(inp));
-        bytes memory exponent= hex"010001";
-
-        uint result = hash.pkcs1Sha256Verify(signature, exponent, modulus);
-        return result == 0;
-    }
-
-    function getPublicKey(string memory attributeType) private returns(string memory) {
-        (bool success, bytes memory result) = dnsTypes.call(abi.encodeWithSignature("getPublicKey(string)", attributeType));
-        return abi.decode(result, (string));
-    }
-
-    // Convert an hexadecimal character to their value
-    function fromHexChar(uint8 c) private pure returns (uint8) {
-        if (byte(c) >= byte('0') && byte(c) <= byte('9')) {
-            return c - uint8(byte('0'));
+    event Verified(string s);
+    function verifyTx(
+        uint[2] memory a,
+        uint[2][2] memory b,
+        uint[2] memory c,
+        uint[3] memory input
+    ) private returns (bool r) {
+        Proof memory proof;
+        proof.a = Pairing.G1Point(a[0], a[1]);
+        proof.b = Pairing.G2Point([b[0][0], b[0][1]], [b[1][0], b[1][1]]);
+        proof.c = Pairing.G1Point(c[0], c[1]);
+        uint[] memory inputValues = new uint[](input.length);
+        for(uint i = 0; i < input.length; i++){
+            inputValues[i] = input[i];
         }
-        if (byte(c) >= byte('a') && byte(c) <= byte('f')) {
-            return 10 + c - uint8(byte('a'));
+        if (verify(inputValues, proof) == 0) {
+            emit Verified("Transaction successfully verified.");
+            return true;
+        } else {
+            return false;
         }
-        if (byte(c) >= byte('A') && byte(c) <= byte('F')) {
-            return 10 + c - uint8(byte('A'));
-        }
-    }
-    
-    // Convert an hexadecimal string to raw bytes
-    function fromHex(string memory s) private pure returns (bytes memory) {
-        bytes memory ss = bytes(s);
-        require(ss.length%2 == 0); // length must be even
-        bytes memory r = new bytes(ss.length/2);
-        for (uint i=0; i<ss.length/2; ++i) {
-            r[i] = byte(fromHexChar(uint8(ss[2*i])) * 16 + fromHexChar(uint8(ss[2*i+1])));
-        }
-        return r;
-    }
-
-    modifier onlyFromIdp() {
-        //require(msg.sender == 0x5963D7FA276fA797f174752A852AbfE32Db791D6, "Invalid");
-        require(1 == 1);
-        _;
     }
 }
