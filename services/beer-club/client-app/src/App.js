@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Web3 from 'web3';
 import Beerclub from './abis/Beerclub.json';
 import Authentication from './components/Authentication.js';
+import UploadProgram from './components/UploadProgram.js';
 
 class App extends Component {
     async UNSAFE_componentWillMount() {
@@ -76,9 +77,10 @@ class App extends Component {
                 </nav>
                 <div className="container-fluid mt-5">
                     <div className="row">
-                        <main role="main" className="col-lg-12 d-flex text-center">
+                        <main role="main" className="col-lg-12 d-flex">
                             <div className="content mr-auto ml-auto">
                                 <Authentication contract={this.state.contract} account={this.state.account} />
+                                <UploadProgram />
                             </div>
                         </main>
                     </div>

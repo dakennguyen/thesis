@@ -6,10 +6,6 @@ import Dns from './abis/Dns.json';
 import AddAttribute from './components/AddAttribute.js';
 import GetData from './components/GetData.js';
 
-//const ipfsClient = require('ipfs-http-client');
-//const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
-//const domain = 'ipfs.infura.io';
-
 class App extends Component {
     async UNSAFE_componentWillMount() {
         document.title = 'Identity Provider';
@@ -64,33 +60,6 @@ class App extends Component {
         };
     }
 
-
-    //captureText = (event) => {
-    //event.preventDefault();
-    //const test = event.target.value;
-    //this.setState({ test });
-    //}
-
-    //onSubmit = (event) => {
-    //event.preventDefault();
-    //console.log("Submitting...");
-    //var buf = Buffer.from(this.state.test, 'utf8');
-    //ipfs.add(buf, (error, result) => {
-    //console.log('ipfs result', result);
-    //const test = result[0].hash;
-    //this.setState({ test });
-    //if (error) {
-    //console.error(error);
-    //return;
-    //}
-
-    //// Step 2: store file on blockchain...
-    //this.state.idpContract.methods.set(test).send({ from: this.state.account }).then((r) => {
-    //this.setState({ test });
-    //});
-    //});
-    //}
-
     render() {
         return (
             <div>
@@ -116,16 +85,6 @@ class App extends Component {
                     <div className="row">
                         <main role="main" className="col-lg-12 d-flex text-center">
                             <div className="content mr-auto ml-auto">
-                                {/*
-                                <p>{`https://${domain}/ipfs/${this.state.test}`}</p>
-                                <form onSubmit={this.onSubmit}>
-                                    <div className="form-group">
-                                        <label>Set test value:</label>
-                                        <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Example input" onChange={this.captureText} />
-                                        <input type='submit' />
-                                    </div>
-                                </form>
-                                */}
                                 <AddAttribute contract={this.state.idpContract} dnsContract={this.state.dnsContract} account={this.state.account} />
                                 <GetData contract={this.state.idpContract} account={this.state.account} />
                             </div>
