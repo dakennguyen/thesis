@@ -11,7 +11,7 @@ contract Idp {
     }
 
     struct Attribute {
-        bytes32 hash;
+        bytes hash;
         bytes signature;
     }
 
