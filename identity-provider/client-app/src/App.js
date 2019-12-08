@@ -12,6 +12,7 @@ import GetData from './components/GetData.js';
 
 class App extends Component {
     async UNSAFE_componentWillMount() {
+        document.title = 'Identity Provider';
         await this.loadWeb3();
         await this.loadBlockchainData();
     }

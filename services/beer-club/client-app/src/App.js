@@ -5,6 +5,7 @@ import Authentication from './components/Authentication.js';
 
 class App extends Component {
     async UNSAFE_componentWillMount() {
+        document.title = 'Beer Club';
         await this.loadWeb3();
         await this.loadBlockchainData();
     }
