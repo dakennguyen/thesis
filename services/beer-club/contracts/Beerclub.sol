@@ -18,15 +18,27 @@ contract Beerclub {
         return (hex"d1fd9efdfaf631c2bdb87ecf9989f5bb98d15fe4fe4bc6e64e77dd84aa5cff6cd00a73720c9690d030aa7c704959ce4b252772bac8719c72bb56e8d96f212904af9c78c6dfb4d3a9fe4a8f6e555e7e07d24d348eeaf0bb47fe176cbe070380ef694153f809cd7032984074f5bcb6eaf618ec357b0ced608d1d1eae3214f790ff", hex"010001");
     }
 
-    function checkSignature() private view returns(bool) {
+    function authenticate(uint[2] memory a, uint[2][2] memory b, uint[2] memory c, uint[3] memory input) public returns (bool r) {
+        bytes32 inputHash = bytesToBytes32(toBytes(input[0] * 340282366920938463463374607431768211456 + input[1]), 0);
         (bytes32 hash, bytes memory signature) = getHashAndSignature();
+        require(inputHash == hash, "Invalid input");
         (bytes memory modulus, bytes memory exponent) = getModulusAndExponent();
-        return hash.pkcs1Sha256Verify(signature, exponent, modulus) == 0;
+        require(hash.pkcs1Sha256Verify(signature, exponent, modulus) == 0, "Signature error");
+        return verifyTx(a, b, c, input);
     }
 
-    function authenticate(uint[2] memory a, uint[2][2] memory b, uint[2] memory c, uint[3] memory input) public returns (bool r) {
-        require(checkSignature(), "Signature error");
-        return verifyTx(a, b, c, input);
+    function toBytes(uint x) private pure returns (bytes memory b) {
+        b = new bytes(32);
+        assembly { mstore(add(b, 32), x) }
+    }
+    
+    function bytesToBytes32(bytes memory b, uint offset) private pure returns (bytes32) {
+        bytes32 out;
+    
+        for (uint i = 0; i < 32; i++) {
+            out |= bytes32(b[offset + i] & 0xFF) >> (i * 8);
+        }
+        return out;
     }
 
     struct VerifyingKey {
