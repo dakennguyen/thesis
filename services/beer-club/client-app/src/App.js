@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
-import Idp from './abis/Idp.json';
 import Beerclub from './abis/Beerclub.json';
 import Authentication from './components/Authentication.js';
 
@@ -15,20 +14,15 @@ class App extends Component {
         const accounts = await web3.eth.getAccounts();
         this.setState({ account: accounts[0] });
         const networkId = await web3.eth.net.getId();
-        const networkData = Idp.networks[networkId];
+        const networkData = Beerclub.networks[networkId];
         if (networkData) {
-            const abi = Idp.abi;
+            const abi = Beerclub.abi;
             const address = networkData.address;
-            console.log('IDP: ' + address);
+            console.log('Beerclub: ' + address);
             const contract = new web3.eth.Contract(abi, address);
-            const beerclubContract = new web3.eth.Contract(Beerclub.abi, Beerclub.networks[networkId].address)
-            this.setState({
-                contract,
-                beerclubContract,
-                address: Beerclub.networks[networkId].address
-            });
-            contract.methods.getRegistered().call({ from: this.state.account }).then((r) => {
-                this.setState({ registered: ((r == null) ? 'false' : r.toString()) })
+            this.setState({ contract });
+            contract.methods.isAuthenticated().call({ from: this.state.account }).then((r) => {
+                this.setState({ authenticated: ((r == null) ? 'false' : r.toString()) })
             });
         } else {
             window.alert('Smart contract not deployed to detected network');
@@ -53,11 +47,8 @@ class App extends Component {
         super(props);
         this.state = {
             account: '',
-            address: null,
-            buffer: null,
             contract: null,
-            beerclubContract: null,
-            registered: '',
+            authenticated: '',
         };
     }
 
@@ -78,7 +69,7 @@ class App extends Component {
                             <small className="text-white">{this.state.account}</small>
                         </li>
                         <li className="nav-item text-nowrap d-none d-sm-none d-sm-block">
-                            <small className="text-white">Registered = {this.state.registered}</small>
+                            <small className="text-white">Authenticated = {this.state.authenticated}</small>
                         </li>
                     </ul>
                 </nav>
@@ -86,7 +77,7 @@ class App extends Component {
                     <div className="row">
                         <main role="main" className="col-lg-12 d-flex text-center">
                             <div className="content mr-auto ml-auto">
-                                <Authentication contract={this.state.contract} beerclubContract={this.state.beerclubContract} address={this.state.address} account={this.state.account} />
+                                <Authentication contract={this.state.contract} account={this.state.account} />
                             </div>
                         </main>
                     </div>

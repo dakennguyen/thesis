@@ -9,6 +9,12 @@ contract Beerclub {
 
     address constant idpContract = 0xed14f8230506F26FDf7C8dAAa4112c7acA5c3061;
     address constant dnsContract = 0x65B1515947047716bE42ceFA38774A0f7d723F14;
+    
+    mapping(address => bool) private authenticated;
+
+    function isAuthenticated() public view returns(bool) {
+        return authenticated[msg.sender];
+    }
 
     function getHashAndSignature(address addr) private returns(bytes memory, bytes memory) {
         (bool success, bytes memory result) = idpContract.call(abi.encodeWithSignature("getData(address,string)", addr, 'age'));
@@ -22,14 +28,16 @@ contract Beerclub {
         return abi.decode(result, (bytes, bytes));
     }
 
-    function authenticate(uint[2] memory a, uint[2][2] memory b, uint[2] memory c, uint[3] memory input) public returns (bool r) {
+    function authenticate(uint[2] memory a, uint[2][2] memory b, uint[2] memory c, uint[3] memory input) public {
+        require(!authenticated[msg.sender], "You have been already authenticated");
         bytes memory inputHash = toBytes(input[0] * 340282366920938463463374607431768211456 + input[1]);
         (bytes memory hash, bytes memory signature) = getHashAndSignature(msg.sender);
         require(keccak256(inputHash) == keccak256(hash), "You didn't use the same hash");
         (bytes memory modulus, bytes memory exponent) = getModulusAndExponent();
         bytes32 hash32 = bytesToBytes32(hash, 0);
         require(hash32.pkcs1Sha256Verify(signature, exponent, modulus) == 0, "Signature error");
-        return verifyTx(a, b, c, input);
+        require(verifyTx(a, b, c, input), "Invalid proof.json");
+        authenticated[msg.sender] = true;
     }
 
     function toBytes(uint x) private pure returns (bytes memory b) {

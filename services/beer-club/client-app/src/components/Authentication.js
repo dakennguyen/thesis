@@ -4,32 +4,27 @@ class Authentication extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            allowedAttributes: 'age'
+            jsonFile: {}
         };
     }
 
-    captureAllowedAttributes = (event) => {
+    captureFile = (event) => {
         event.preventDefault();
-        this.setState({ allowedAttributes: event.target.value });
-    }
-
-    //getAllowedClaims = (event) => {
-        //event.preventDefault();
-        //this.props.contract.methods.getAllowedAttributes(this.props.address).call().then((r) => {
-            //console.log(r);
-        //})
-    //}
+        const file = event.target.files[0];
+        const reader = new window.FileReader();
+        reader.readAsText(file);
+        reader.onloadend = () => {
+            this.setState({ jsonFile: JSON.parse(reader.result) });
+        }
+    };
 
     onSubmit = (event) => {
         event.preventDefault();
-        console.log('Send ' + this.state.allowedAttributes);
-        console.log('From: ' + this.props.account);
-        console.log('To: ' + this.props.address);
-        this.props.contract.methods.sendData(this.props.address, this.state.allowedAttributes).send({ from: this.props.account }).then((r) => {
-            console.log("Validating...");
-            this.props.beerclubContract.methods.getData(this.props.account).call().then((r) => {
-                console.log(r);
-            })
+        var p = this.state.jsonFile.proof;
+        var i = this.state.jsonFile.inputs;
+        console.log("Validating...");
+        this.props.contract.methods.authenticate(p.a, p.b, p.c, i).send({ from: this.props.account }).then((r) => {
+            console.log("Done. Please reload page...");
         });
     }
 
@@ -38,11 +33,9 @@ class Authentication extends Component {
             <React.Fragment>
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
-                        <h2>Send data to service:</h2>
-                        <input className="form-control" type="text" placeholder={this.props.address} readOnly />
-                        <input type="text" className="form-control" id="formGroupExampleInput" placeholder={this.state.allowedAttributes} onChange={this.captureAllowedAttributes} />
+                        <h2>Submit proof.json to authorize:</h2>
+                        <input type='file' onChange={this.captureFile} />
                         <button type="submit" className="btn btn-primary">Authorize</button>
-                        {/*<button type="button" className="btn btn-primary" onClick={this.getAllowedClaims}>Get service's allowed claims</button>*/}
                     </div>
                 </form>
             </React.Fragment>
