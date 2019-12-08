@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 import Web3 from 'web3';
 import Idp from './abis/Idp.json';
-import Types from './abis/Types.json';
-//import Services from './abis/Services.json';
-import AddClaim from './components/AddClaim.js';
+import Dns from './abis/Dns.json';
+import AddAttribute from './components/AddAttribute.js';
+import GetData from './components/GetData.js';
 
 //const ipfsClient = require('ipfs-http-client');
 //const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
@@ -26,12 +26,11 @@ class App extends Component {
             const abi = Idp.abi;
             const address = networkData.address;
             console.log('IDP: ' + address);
-            const contract = new web3.eth.Contract(abi, address);
-            const typesContract = new web3.eth.Contract(Types.abi, Types.networks[networkId].address);
-            console.log('DNS Types: ' + Types.networks[networkId].address);
-            //console.log('DNS Services: ' + Services.networks[networkId].address);
-            this.setState({ contract, typesContract });
-            contract.methods.getRegistered().call({ from: this.state.account }).then((r) => {
+            const idpContract = new web3.eth.Contract(abi, address);
+            const dnsContract = new web3.eth.Contract(Dns.abi, Dns.networks[networkId].address);
+            console.log('DNS: ' + Dns.networks[networkId].address);
+            this.setState({ idpContract, dnsContract });
+            idpContract.methods.getRegistered().call({ from: this.state.account }).then((r) => {
                 this.setState({ registered: ((r == null) ? 'false' : r.toString()) })
             });
         } else {
@@ -58,8 +57,8 @@ class App extends Component {
         this.state = {
             account: '',
             buffer: null,
-            contract: null,
-            typesContract: null,
+            idpContract: null,
+            dnsContract: null,
             registered: '',
         };
     }
@@ -85,7 +84,7 @@ class App extends Component {
     //}
 
     //// Step 2: store file on blockchain...
-    //this.state.contract.methods.set(test).send({ from: this.state.account }).then((r) => {
+    //this.state.idpContract.methods.set(test).send({ from: this.state.account }).then((r) => {
     //this.setState({ test });
     //});
     //});
@@ -126,7 +125,8 @@ class App extends Component {
                                     </div>
                                 </form>
                                 */}
-                                <AddClaim contract={this.state.contract} typesContract={this.state.typesContract} account={this.state.account} />
+                                <AddAttribute contract={this.state.idpContract} dnsContract={this.state.dnsContract} account={this.state.account} />
+                                <GetData contract={this.state.idpContract} account={this.state.account} />
                             </div>
                         </main>
                     </div>

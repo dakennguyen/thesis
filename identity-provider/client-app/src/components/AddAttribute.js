@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 
-class AddClaim extends Component {
+class AddAttribute extends Component {
     constructor(props) {
         super(props);
         this.state = {
             attributeType: '',
             attributeValue: '',
+            hash: 'Hash...',
             signature: 'Signature...',
             signedBy: 'Signed by...'
         };
@@ -15,6 +16,7 @@ class AddClaim extends Component {
         event.preventDefault();
         this.setState({
             attributeType: event.target.value,
+            hash: 'Please fetch signature!',
             signature: 'Please fetch signature!',
             signedBy: 'Please fetch signature!'
         });
@@ -24,6 +26,7 @@ class AddClaim extends Component {
         event.preventDefault();
         this.setState({
             attributeValue: event.target.value,
+            hash: 'Please fetch signature!',
             signature: 'Please fetch signature!',
             signedBy: 'Please fetch signature!'
         });
@@ -31,11 +34,14 @@ class AddClaim extends Component {
 
     onConfirm = (event) => {
         event.preventDefault();
-        this.props.typesContract.methods.getValidator(this.state.attributeType).call().then((r) => {
+        this.props.dnsContract.methods.getValidator(this.state.attributeType).call().then((r) => {
             fetch(r + '?data=' + this.state.attributeValue).then((result) => {
                 result.json().then(data => {
-                    this.setState({ signature: data.signature })
-                    this.setState({ signedBy: r });
+                    this.setState({
+                        hash: data.hash,
+                        signature: data.signature,
+                        signedBy: r
+                    })
                 });
             });
         });
@@ -43,22 +49,14 @@ class AddClaim extends Component {
 
     onSubmit = (event) => {
         event.preventDefault();
-        this.props.contract.methods.addAttribute(this.state.attributeType, this.state.attributeValue, this.state.signature).send({ from: this.props.account }).then((r) => {
+        this.props.contract.methods.add(this.state.attributeType, this.state.hash, this.state.signature).send({ from: this.props.account }).then((r) => {
             console.log("submitted");
         });
     }
 
-
     register = (event) => {
         event.preventDefault();
         this.props.contract.methods.register.send({ from: this.props.account });
-    }
-
-    getAllAttributes = (event) => {
-        event.preventDefault();
-        this.props.contract.methods.getAllAttributes.call({ from: this.props.account }).then((r) => {
-            console.log(r);
-        })
     }
 
     render() {
@@ -68,11 +66,11 @@ class AddClaim extends Component {
                     <h2>Add a new attribute:</h2>
                     <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Type" onChange={this.captureAttributeType} />
                     <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Value" onChange={this.captureAttributeValue} />
+                    <input className="form-control" type="text" placeholder={this.state.hash} readOnly />
                     <input className="form-control" type="text" placeholder={this.state.signature} readOnly />
                     <input className="form-control" type="text" placeholder={this.state.signedBy} readOnly />
                     <button type="button" className="btn btn-secondary" onClick={this.onConfirm}>Confirm</button>
                     <button type="submit" className="btn btn-primary">Submit</button>
-                    <button type="button" className="btn btn-primary" onClick={this.getAllAttributes}>Get all Attributes</button>
                     <button type="button" className="btn btn-primary" onClick={this.register}>Register</button>
                 </div>
             </form>
@@ -80,4 +78,4 @@ class AddClaim extends Component {
     }
 }
 
-export default AddClaim;
+export default AddAttribute;
