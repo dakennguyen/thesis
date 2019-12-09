@@ -46,7 +46,8 @@ module.exports = {
             host: "127.0.0.1",     // Localhost (default: none)
             port: 8545,            // Standard Ethereum port (default: none)
             network_id: "*",       // Any network (default: none)
-            gas: 5000000
+            gas: 5000000,
+            from: '0x662D64363933059A000968D8f780c6053B4B3a91', // Account 7
         },
 
         // Another network with more advanced options...

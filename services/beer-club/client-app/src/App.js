@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Web3 from 'web3';
 import Beerclub from './abis/Beerclub.json';
 import Authentication from './components/Authentication.js';
-import UploadProgram from './components/UploadProgram.js';
+import Program from './components/Program.js';
 
 class App extends Component {
     async UNSAFE_componentWillMount() {
@@ -80,7 +80,7 @@ class App extends Component {
                         <main role="main" className="col-lg-12 d-flex">
                             <div className="content mr-auto ml-auto">
                                 <Authentication contract={this.state.contract} account={this.state.account} />
-                                <UploadProgram />
+                                <Program contract={this.state.contract} account={this.state.account} />
                             </div>
                         </main>
                     </div>

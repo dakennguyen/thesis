@@ -7,13 +7,27 @@ contract Beerclub {
     using Pairing for *;
     using rsaverify for *;
 
-    address constant idpContract = 0xed14f8230506F26FDf7C8dAAa4112c7acA5c3061;
-    address constant dnsContract = 0x65B1515947047716bE42ceFA38774A0f7d723F14;
+    address constant idpContract = 0x6D58AE38ca510a119fb903B35B88Fd5936a33eA7;
+    address constant dnsContract = 0xCE43d89aBBD54485be9a4009Cc50F47dD623aE54;
     
+    address private owner;
+    string private ipfsHash;
     mapping(address => bool) private authenticated;
+
+    constructor() public {
+        owner = msg.sender;
+    }
 
     function isAuthenticated() public view returns(bool) {
         return authenticated[msg.sender];
+    }
+
+    function getIpfsHash() public view returns(string memory) {
+        return ipfsHash;
+    }
+
+    function setIpfsHash(string memory _ipfsHash) public onlyOwner () {
+        ipfsHash = _ipfsHash;
     }
 
     function getHashAndSignature(address addr) private returns(bytes memory, bytes memory) {
@@ -32,7 +46,7 @@ contract Beerclub {
         require(!authenticated[msg.sender], "You have been already authenticated");
         bytes memory inputHash = toBytes(input[0] * 340282366920938463463374607431768211456 + input[1]);
         (bytes memory hash, bytes memory signature) = getHashAndSignature(msg.sender);
-        require(keccak256(inputHash) == keccak256(hash), "You didn't use the same hash");
+        require(keccak256(inputHash) == keccak256(hash), "Hash value in proof.json is diffrent from hash value in the ledger");
         (bytes memory modulus, bytes memory exponent) = getModulusAndExponent();
         bytes32 hash32 = bytesToBytes32(hash, 0);
         require(hash32.pkcs1Sha256Verify(signature, exponent, modulus) == 0, "Signature error");
@@ -52,6 +66,11 @@ contract Beerclub {
             out |= bytes32(b[offset + i] & 0xFF) >> (i * 8);
         }
         return out;
+    }
+
+    modifier onlyOwner {
+        require(msg.sender == owner, "Only owner can call this function.");
+        _;
     }
 
     struct VerifyingKey {

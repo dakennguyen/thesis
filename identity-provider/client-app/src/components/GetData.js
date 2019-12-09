@@ -18,7 +18,8 @@ class GetData extends Component {
     onSubmit = (event) => {
         event.preventDefault();
         this.props.contract.methods.getData(this.props.account, this.state.attributeType).call().then((r) => {
-            console.log(r);
+            console.log("Hash: " + r[0]);
+            console.log("Signature: " + r[1]);
         })
     }
 
