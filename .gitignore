@@ -6,6 +6,7 @@ services/beer-club/build
 services/beer-club/client-app/src/abis
 
 services/library/build
+services/library/client-app/src/abis
 
 identity-provider/client-app/node_modules
 identity-provider/client-app/src/abis
