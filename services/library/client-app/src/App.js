@@ -79,6 +79,7 @@ class App extends Component {
                     <div className="row">
                         <main role="main" className="col-lg-12 d-flex">
                             <div className="content mr-auto ml-auto">
+                                <h1>Need attribute: name and uni</h1>
                                 <Authentication contract={this.state.contract} account={this.state.account} />
                                 <Program contract={this.state.contract} account={this.state.account} />
                             </div>

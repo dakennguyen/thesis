@@ -7,13 +7,8 @@ contract Library {
     using Pairing for *;
     using rsaverify for *;
 
-<<<<<<< HEAD
-    address constant idpContract = 0x6D58AE38ca510a119fb903B35B88Fd5936a33eA7;
-    address constant dnsContract = 0xCE43d89aBBD54485be9a4009Cc50F47dD623aE54;
-=======
-    address constant idpContract = 0x50deb257C24DbB8e595Ab03313EA5837c9Ebe26d;
-    address constant dnsContract = 0x34651cf47FC38DC8db34Be8eA7f4c60f3110c767;
->>>>>>> version2
+    address constant idpContract = 0xdAfC8792D826958934C46ae25f4c6D96fc14C1C8;
+    address constant dnsContract = 0x6B1AAF4285E519c1ca2180a39693ac6807029E70;
 
     address private owner;
     string private ipfsHash;
@@ -21,6 +16,7 @@ contract Library {
 
     constructor() public {
         owner = msg.sender;
+        ipfsHash = 'QmS5sbuwgCJaQXhpf4JXsnJczf6vvf8LKmMwW6k9jQ3bRE';
     }
 
     function isAuthenticated() public view returns(bool) {

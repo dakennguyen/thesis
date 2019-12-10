@@ -7,8 +7,8 @@ contract Beerclub {
     using Pairing for *;
     using rsaverify for *;
 
-    address constant idpContract = 0x50deb257C24DbB8e595Ab03313EA5837c9Ebe26d;
-    address constant dnsContract = 0x34651cf47FC38DC8db34Be8eA7f4c60f3110c767;
+    address constant idpContract = 0xdAfC8792D826958934C46ae25f4c6D96fc14C1C8;
+    address constant dnsContract = 0x6B1AAF4285E519c1ca2180a39693ac6807029E70;
     
     address private owner;
     string private ipfsHash;
@@ -16,6 +16,7 @@ contract Beerclub {
 
     constructor() public {
         owner = msg.sender;
+        ipfsHash = 'QmZVatmY6ZkBXzCtfATeUwGnK983Xku8fk9Lp2Ja3A4kQ7';
     }
 
     function isAuthenticated() public view returns(bool) {
