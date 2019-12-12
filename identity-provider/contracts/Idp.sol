@@ -1,9 +1,7 @@
 pragma solidity ^0.5.0;
 
 contract Idp {
-    mapping(address => string) private services;
     mapping(address => Data) private clients;
-    uint private clientsCount;
 
     struct Data {
         mapping(string => Attribute) data;
@@ -22,14 +20,6 @@ contract Idp {
         clients[a0].registered = true;
     }
 
-    function setService(string memory ipfsHash) public {
-        services[msg.sender] = ipfsHash;
-    }
-
-    function getService(address addr) public onlyClient view returns(string memory) {
-        return services[addr];
-    }
-
     function getRegistered() public view returns(bool) {
         return clients[msg.sender].registered;
     }
@@ -41,7 +31,6 @@ contract Idp {
     function register() public {
         require(!clients[msg.sender].registered, "Already registered");
         clients[msg.sender].registered = true;
-        clientsCount++;
     }
 
     function add(string memory attributeType, string memory hash, string memory signature) public onlyClient {

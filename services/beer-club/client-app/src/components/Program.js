@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
-const domain = 'https://gateway.ipfs.io/ipfs/';
+//const domain = 'https://gateway.ipfs.io/ipfs/';
+const domain = 'http://localhost:8080/ipfs/';
 
 class Program extends Component {
     constructor(props) {
