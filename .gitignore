@@ -10,8 +10,3 @@ services/library/client-app/src/abis
 
 identity-provider/client-app/node_modules
 identity-provider/client-app/src/abis
-
-validators/.vs
-validators/.vscode
-validators/bin
-validators/obj
