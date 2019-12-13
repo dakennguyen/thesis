@@ -28,7 +28,7 @@ class GetData extends Component {
             <form onSubmit={this.onSubmit}>
                 <div className="form-group">
                     <h2>Get data by type:</h2>
-                    <input type="text" className="form-control" id="formGroupExampleInput" placeholder="Type" onChange={this.captureAttributeType} />
+                    <input type="text" className="form-control" placeholder="Type" onChange={this.captureAttributeType} />
                     <button type="submit" className="btn btn-primary">Submit</button>
                 </div>
             </form>
