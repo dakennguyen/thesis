@@ -36,6 +36,7 @@ class AddAttribute extends Component {
         event.preventDefault();
         this.props.dnsContract.methods.getValidator(this.state.attributeType).call().then((r) => {
             fetch(r + '?data=' + this.state.attributeValue).then((result) => {
+                console.log(r);
                 result.json().then(data => {
                     this.setState({
                         hash: data.hash,
