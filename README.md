@@ -7,3 +7,9 @@
 ## Client Apps
 - Copy Dns.json from dns/build/contracts into identity-provider/client-app/src/abis 
 - Run 'npm start' inside each client-app folder to start
+
+## Validators
+If you want to run validators on local:
+- cd to Validators and run 'dotnet run'
+- edit DNS.sol's constructor to the corresponding api address
+
