@@ -9,7 +9,7 @@ contract Beerclub {
 
     address constant idpContract = 0xdAfC8792D826958934C46ae25f4c6D96fc14C1C8;
     address constant dnsContract = 0x6B1AAF4285E519c1ca2180a39693ac6807029E70;
-    
+
     address private owner;
     string private ipfsHash;
     mapping(address => bool) private authenticated;
@@ -59,10 +59,10 @@ contract Beerclub {
         b = new bytes(32);
         assembly { mstore(add(b, 32), x) }
     }
-    
+
     function bytesToBytes32(bytes memory b, uint offset) private pure returns (bytes32) {
         bytes32 out;
-    
+
         for (uint i = 0; i < 32; i++) {
             out |= bytes32(b[offset + i] & 0xFF) >> (i * 8);
         }
