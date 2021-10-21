@@ -1,3 +1,5 @@
+# ./peggy.sh age_hash age
+
 AGE="$(./stringToDec.sh $2)"
 
 TMP="$(echo $1 | cut -c 3-34)"

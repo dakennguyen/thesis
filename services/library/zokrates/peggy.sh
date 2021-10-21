@@ -1,3 +1,5 @@
+# ./peggy.sh name_hash uni_hash name uni
+
 NAME="$(./stringToDec.sh $3)"
 TMP="$(echo $1 | cut -c 3-34)"
 HASH1="$(./hexToDec.sh $TMP)"
